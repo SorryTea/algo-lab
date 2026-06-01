@@ -1,4 +1,10 @@
+using algorithms_visualizer.Data;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddControllersWithViews();
 
@@ -22,7 +28,6 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-// 2. CORS przed routingiem
 app.UseCors("DevPolicy");
 
 app.UseRouting();
