@@ -5,9 +5,6 @@
 
 # w .gitignore
 .vscode/*
-!.vscode/extensions.json
-!.vscode/tasks.json
-!.vscode/launch.json
 
 # SQLite database (local only)
 *.db
