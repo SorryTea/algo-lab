@@ -1,4 +1,6 @@
 using algorithms_visualizer.Data;
+using algorithms_visualizer.Services;
+using algorithms_visualizer.Services.Sorting;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,6 +26,10 @@ builder.Services.AddCors(options =>
               .AllowAnyMethod();
     });
 });
+
+// Add services to the container.
+
+builder.Services.AddScoped<ISortingAlgorithm, BubbleSortService>();
 
 var app = builder.Build();
 
