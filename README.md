@@ -71,7 +71,19 @@ git clone https://github.com/SorryTea/algo-lab.git
 cd algo-lab
 ```
 
-### 2. Uruchomienie backendu
+### 2. Inicjalizacja bazy danych
+
+Aplikacja używa SQLite. Plik bazy nie jest w repozytorium — każdy developer tworzy go lokalnie z migracji:
+
+```bash
+cd algorithms-visualizer
+dotnet tool install --global dotnet-ef
+dotnet ef database update
+```
+
+Pierwsza komenda instaluje narzędzie EF Core CLI (tylko za pierwszym razem). Druga tworzy plik `app.db` z aktualną strukturą bazy.
+
+### 3. Uruchomienie backendu
 
 W pierwszym terminalu:
 
@@ -86,7 +98,7 @@ Backend uruchomi się pod adresami:
 - **HTTP:** <http://localhost:5192>
 - **HTTPS:** <https://localhost:7027>
 
-### 3. Uruchomienie frontendu
+### 4. Uruchomienie frontendu
 
 W drugim terminalu:
 
