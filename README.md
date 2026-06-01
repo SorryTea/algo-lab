@@ -71,9 +71,16 @@ git clone https://github.com/SorryTea/algo-lab.git
 cd algo-lab
 ```
 
-### 2. Inicjalizacja bazy danych
+### 2. Przygotowanie bazy danych
 
-Aplikacja używa SQLite. Plik bazy nie jest w repozytorium — każdy developer tworzy go lokalnie z migracji:
+Aplikacja używa SQLite. Plik bazy nie jest w repozytorium — zostanie utworzony lokalnie przy pierwszym uruchomieniu backendu. Migracje i dane startowe są aplikowane automatycznie.
+
+**Nic nie trzeba robić ręcznie - przejdź do kroku 3.**
+
+<details>
+<summary>Opcjonalnie: ręczna inicjalizacja bazy</summary>
+
+Jeśli chcesz utworzyć bazę przed uruchomieniem aplikacji:
 
 ```bash
 cd algorithms-visualizer
@@ -81,7 +88,7 @@ dotnet tool install --global dotnet-ef
 dotnet ef database update
 ```
 
-Pierwsza komenda instaluje narzędzie EF Core CLI (tylko za pierwszym razem). Druga tworzy plik `app.db` z aktualną strukturą bazy.
+</details>
 
 ### 3. Uruchomienie backendu
 
@@ -112,7 +119,7 @@ Frontend uruchomi się pod adresem:
 
 - <http://localhost:5173>
 
-Vite jest skonfigurowany z proxy — zapytania do `/api/*` są automatycznie przekierowywane do backendu na porcie 5192.
+Vite jest skonfigurowany z proxy - zapytania do `/api/*` są automatycznie przekierowywane do backendu na porcie 5192.
 
 ---
 
