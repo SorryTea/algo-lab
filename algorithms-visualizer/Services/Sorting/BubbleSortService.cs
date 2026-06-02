@@ -1,4 +1,3 @@
-using System;
 using algorithms_visualizer.Services.Models;
 
 namespace algorithms_visualizer.Services.Sorting;
@@ -50,7 +49,27 @@ public class BubbleSortService : ISortingAlgorithm
 
             sorted.Add(n - 1 - i);
 
+            steps.Add(new AlgorithmStep
+            {
+                StepIndex = steps.Count,
+                Array = (int[])arr.Clone(),
+                Comparing = [],
+                SortedIndices = sorted.ToArray(),
+                Swapped = false,
+                Description = $"Element at index {n - 1 - i} is now in correct position"
+            });
+
         }
+
+        steps.Add(new AlgorithmStep
+        {
+            StepIndex = steps.Count,
+            Array = (int[])arr.Clone(),
+            Comparing = [],
+            SortedIndices = sorted.ToArray(),
+            Swapped = false,
+            Description = $"Sorting complete"
+        });
 
         return steps;
     }
