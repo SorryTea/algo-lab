@@ -30,6 +30,8 @@ builder.Services.AddCors(options =>
 // Add services to the container.
 
 builder.Services.AddScoped<ISortingAlgorithm, BubbleSortService>();
+builder.Services.AddScoped<ISortingAlgorithm, SelectionSortService>();
+builder.Services.AddScoped<ISortingAlgorithm, InsertionSortService>();
 
 var app = builder.Build();
 
