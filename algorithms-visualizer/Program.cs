@@ -32,6 +32,7 @@ builder.Services.AddCors(options =>
 builder.Services.AddScoped<ISortingAlgorithm, BubbleSortService>();
 builder.Services.AddScoped<ISortingAlgorithm, SelectionSortService>();
 builder.Services.AddScoped<ISortingAlgorithm, InsertionSortService>();
+builder.Services.AddScoped<ISortingAlgorithm, MergeSortService>();
 
 var app = builder.Build();
 
