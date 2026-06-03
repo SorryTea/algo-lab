@@ -1,0 +1,40 @@
+@{
+    ViewData["Title"] = "Panel administracyjny";
+}
+
+<h1>Panel administracyjny</h1>
+<p class="text-muted">Witaj, @User.Identity?.Name</p>
+
+<div class="row mt-4">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <h2>@ViewBag.AlgorithmsCount</h2>
+                <p class="text-muted mb-0">Algorytmów</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <h2>@ViewBag.CategoriesCount</h2>
+                <p class="text-muted mb-0">Kategorii</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <h2>@ViewBag.ExecutionsCount</h2>
+                <p class="text-muted mb-0">Uruchomień</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h2 class="mt-5">Zarządzanie</h2>
+<ul>
+    <li><a asp-controller="Admin" asp-action="Algorithms">Algorytmy (CRUD)</a></li>
+    <li><a asp-controller="Admin" asp-action="Categories">Kategorie</a></li>
+    <li><a asp-controller="Admin" asp-action="Logs">Historia uruchomień</a></li>
+</ul>
