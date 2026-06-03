@@ -1,4 +1,5 @@
 using algorithms_visualizer.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace algorithms_visualizer.Data
 {
@@ -52,6 +53,17 @@ namespace algorithms_visualizer.Data
                 },
                 new Algorithm
                 {
+                    Name = "merge",
+                    DisplayName = "Merge Sort",
+                    Description = "Algorytm rekurencyjny - dzieli tablicę na pół, sortuje każdą połowę osobno, a następnie scala posortowane części w jedną uporządkowaną tablicę.",
+                    PseudoCode = "mergeSort(arr, left, right):\n  if left >= right\n    return\n  mid = (left + right) / 2\n  mergeSort(arr, left, mid)\n  mergeSort(arr, mid + 1, right)\n  merge(arr, left, mid, right)",
+                    TimeComplexity = "O(n log n)",
+                    SpaceComplexity = "O(n)",
+                    IsVisible = true,
+                    CategoryId = sorting.Id
+                },
+                new Algorithm
+                {
                     Name = "binary-search",
                     DisplayName = "Binary Search",
                     Description = "Algorytm wyszukuje element w posortowanej tablicy, za każdym krokiem odrzucając połowę pozostałego zakresu.",
@@ -85,6 +97,38 @@ namespace algorithms_visualizer.Data
                 });
 
             context.SaveChanges();
+        }
+
+        public static async Task SeedAdminAsync(
+            UserManager<IdentityUser> userManager,
+            RoleManager<IdentityRole> roleManager)
+        {
+            const string adminRole = "Admin";
+            const string adminEmail = "admin@local";
+            const string adminPassword = "Admin123";
+
+            if (!await roleManager.RoleExistsAsync(adminRole))
+            {
+                await roleManager.CreateAsync(new IdentityRole(adminRole));
+            }
+
+            var existingAdmin = await userManager.FindByEmailAsync(adminEmail);
+            if (existingAdmin != null) return;
+
+            var adminUser = new IdentityUser
+            {
+                UserName = adminEmail,
+                Email = adminEmail,
+                EmailConfirmed = true
+            };
+
+            var result = await userManager.CreateAsync(adminUser, adminPassword);
+
+            if (result.Succeeded)
+            {
+                await userManager.AddToRoleAsync(adminUser, adminRole);
+            }
+
         }
     }
 }
