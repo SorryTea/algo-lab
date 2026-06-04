@@ -100,7 +100,7 @@ namespace algorithms_visualizer.Data
         }
 
         public static async Task SeedAdminAsync(
-            UserManager<IdentityUser> userManager,
+            UserManager<AppUser> userManager,
             RoleManager<IdentityRole> roleManager)
         {
             const string adminRole = "Admin";
@@ -115,7 +115,7 @@ namespace algorithms_visualizer.Data
             var existingAdmin = await userManager.FindByEmailAsync(adminEmail);
             if (existingAdmin != null) return;
 
-            var adminUser = new IdentityUser
+            var adminUser = new AppUser
             {
                 UserName = adminEmail,
                 Email = adminEmail,

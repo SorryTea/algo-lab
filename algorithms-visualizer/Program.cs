@@ -1,4 +1,5 @@
 using algorithms_visualizer.Data;
+using algorithms_visualizer.Models;
 using algorithms_visualizer.Services;
 using algorithms_visualizer.Services.Sorting;
 using Microsoft.AspNetCore.Identity;
@@ -9,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+builder.Services.AddDefaultIdentity<AppUser>(options =>
 {
     options.SignIn.RequireConfirmedAccount = false;
     options.Password.RequireDigit = false;
@@ -58,7 +59,7 @@ using (var scope = app.Services.CreateScope())
     db.Database.Migrate();
     DbSeeder.Seed(db);
 
-    var userManager = services.GetRequiredService<UserManager<IdentityUser>>();
+    var userManager = services.GetRequiredService<UserManager<AppUser>>();
     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
     await DbSeeder.SeedAdminAsync(userManager, roleManager);
 }
