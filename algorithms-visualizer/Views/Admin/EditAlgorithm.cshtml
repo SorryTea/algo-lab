@@ -1,0 +1,62 @@
+@model algorithms_visualizer.Models.Algorithm
+
+@{
+    ViewData["Title"] = $"Edycja: {Model.DisplayName}";
+    var categories = ViewBag.Categories as IEnumerable<algorithms_visualizer.Models.Category>;
+}
+
+<h1>Edycja algorytmu</h1>
+<p><a asp-action="Algorithms">← Powrót do listy</a></p>
+
+<form asp-action="EditAlgorithm" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+    <input type="hidden" asp-for="Name" />
+
+    <div class="mb-3">
+        <label asp-for="DisplayName" class="form-label">Nazwa wyświetlana</label>
+        <input asp-for="DisplayName" class="form-control" />
+        <span asp-validation-for="DisplayName" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label">Opis</label>
+        <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="PseudoCode" class="form-label">Pseudokod</label>
+        <textarea asp-for="PseudoCode" class="form-control font-monospace" rows="8"></textarea>
+        <span asp-validation-for="PseudoCode" class="text-danger"></span>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label asp-for="TimeComplexity" class="form-label">Złożoność czasowa</label>
+            <input asp-for="TimeComplexity" class="form-control" />
+        </div>
+        <div class="col-md-6 mb-3">
+            <label asp-for="SpaceComplexity" class="form-label">Złożoność pamięciowa</label>
+            <input asp-for="SpaceComplexity" class="form-control" />
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="CategoryId" class="form-label">Kategoria</label>
+        <select asp-for="CategoryId" class="form-select">
+            @foreach (var cat in categories!)
+            {
+                <option value="@cat.Id">@cat.Name</option>
+            }
+        </select>
+    </div>
+
+    <div class="form-check mb-3">
+        <input asp-for="IsVisible" class="form-check-input" />
+        <label asp-for="IsVisible" class="form-check-label">Widoczny dla użytkowników</label>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Zapisz</button>
+    <a asp-action="Algorithms" class="btn btn-secondary">Anuluj</a>
+</form>
