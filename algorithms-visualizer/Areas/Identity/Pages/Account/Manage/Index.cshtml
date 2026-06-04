@@ -1,0 +1,56 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Profile";
+    ViewData["ActivePage"] = ManageNavPages.Index;
+}
+
+<h3>@ViewData["Title"]</h3>
+<partial name="_StatusMessage" for="StatusMessage" />
+
+<div class="row">
+    <div class="col-md-6">
+        <form id="profile-form" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+
+            <div class="form-floating mb-3">
+                <input asp-for="Username" class="form-control" placeholder="Username" disabled />
+                <label asp-for="Username" class="form-label"></label>
+            </div>
+
+            <div class="form-floating mb-3">
+                <input asp-for="Input.Nickname" class="form-control" placeholder="Your nickname" />
+                <label asp-for="Input.Nickname" class="form-label"></label>
+                <span asp-validation-for="Input.Nickname" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Current avatar</label>
+                <div>
+                    @if (!string.IsNullOrEmpty(Model.CurrentAvatarPath))
+                    {
+                        <img src="@Model.CurrentAvatarPath" alt="Avatar" class="rounded-circle"
+                             style="width:96px;height:96px;object-fit:cover;" />
+                    }
+                    else
+                    {
+                        <div class="text-muted">No avatar uploaded yet.</div>
+                    }
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Input.AvatarFile" class="form-label">Upload new avatar</label>
+                <input asp-for="Input.AvatarFile" type="file" class="form-control" accept="image/*" />
+                <small class="text-muted">PNG, JPG, GIF or WEBP, max 2 MB.</small>
+                <span asp-validation-for="Input.AvatarFile" class="text-danger"></span>
+            </div>
+
+            <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
