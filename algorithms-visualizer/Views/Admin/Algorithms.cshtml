@@ -1,0 +1,48 @@
+@model IEnumerable<algorithms_visualizer.Models.Algorithm>
+
+@{
+    ViewData["Title"] = "Algorytmy";
+}
+
+<h1>Algorytmy</h1>
+<p><a asp-action="Index">← Powrót do panelu</a></p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nazwa</th>
+            <th>Kategoria</th>
+            <th>Złożoność</th>
+            <th>Widoczny</th>
+            <th>Akcje</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var algo in Model)
+        {
+            <tr>
+                <td>@algo.DisplayName <small class="text-muted">(@algo.Name)</small></td>
+                <td>@algo.Category?.Name</td>
+                <td><code>@algo.TimeComplexity</code></td>
+                <td>
+                    @if (algo.IsVisible)
+                    {
+                        <span class="badge bg-success">Tak</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Nie</span>
+                    }
+                </td>
+                <td>
+                    <a asp-action="EditAlgorithm" asp-route-id="@algo.Id" class="btn btn-sm btn-primary">Edytuj</a>
+                    <form asp-action="DeleteAlgorithm" asp-route-id="@algo.Id" method="post" class="d-inline"
+                          onsubmit="return confirm('Usunąć @algo.DisplayName?');">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-sm btn-danger">Usuń</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

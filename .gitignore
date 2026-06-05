@@ -3,6 +3,12 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
+# Uploaded files (runtime data, not source code)
+algorithms-visualizer/wwwroot/uploads/**
+!algorithms-visualizer/wwwroot/uploads/.gitkeep
+!algorithms-visualizer/wwwroot/uploads/avatars/
+!algorithms-visualizer/wwwroot/uploads/avatars/.gitkeep
+
 # w .gitignore
 .vscode/*
 
