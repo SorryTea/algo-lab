@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router";
 import { getAlgorithm } from "../lib/api";
+import SortVisualizer from "../components/SortVisualizer";
 
 export default function Visualizer() {
   const { id } = useParams();
@@ -47,9 +48,14 @@ export default function Visualizer() {
             {algorithm.pseudoCode}
           </pre>
 
-          <div className="mt-8 h-64 rounded-xl border-2 border-dashed border-obsidian-border flex items-center justify-center text-obsidian-muted">
-            Obszar wizualizacji (kolejny etap)
-          </div>
+          {algorithm.category?.slug === "sorting" ? (
+            <SortVisualizer algorithmName={algorithm.name} />
+          ) : (
+            <div className="mt-8 h-40 rounded-xl border-2 border-dashed border-obsidian-border flex items-center justify-center text-center text-obsidian-muted px-4">
+              Wizualizacja dla kategorii „{algorithm.category?.name}” jest w przygotowaniu —
+              backend ma na razie tylko algorytmy sortowania.
+            </div>
+          )}
         </>
       )}
     </div>
