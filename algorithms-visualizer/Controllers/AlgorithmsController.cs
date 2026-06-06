@@ -14,13 +14,16 @@ public class AlgorithmsController : ControllerBase
 {
     private readonly AppDbContext _context;
     private readonly IEnumerable<ISortingAlgorithm> _algorithms;
+    private readonly IEnumerable<ISearchingAlgorithm> _searchingAlgorithms;
 
     public AlgorithmsController(
         AppDbContext context,
-        IEnumerable<ISortingAlgorithm> algorithms)
+        IEnumerable<ISortingAlgorithm> algorithms,
+        IEnumerable<ISearchingAlgorithm> searchingAlgorithms)
     {
         _context = context;
         _algorithms = algorithms;
+        _searchingAlgorithms = searchingAlgorithms;
     }
 
     [HttpGet]
@@ -54,13 +57,23 @@ public class AlgorithmsController : ControllerBase
         if (request.InputData == null || request.InputData.Length == 0)
             return BadRequest("Input data is required");
 
-        var service = _algorithms.FirstOrDefault(a => a.Name.Equals(request.AlgorithmName, StringComparison.OrdinalIgnoreCase));
+        var sortingService = _algorithms.FirstOrDefault(a => a.Name.Equals(request.AlgorithmName, StringComparison.OrdinalIgnoreCase));
+        var searchingService = _searchingAlgorithms.FirstOrDefault(a => a.Name.Equals(request.AlgorithmName, StringComparison.OrdinalIgnoreCase));
 
-        if (service == null)
+        if (sortingService == null && searchingService == null)
             return NotFound("Algorithm not found");
 
+        if (searchingService != null && request.Target == null)
+            return BadRequest("Target value is required for searching algorithms");
+
         var stopwatch = Stopwatch.StartNew();
-        var steps = service.Execute(request.InputData);
+        List<AlgorithmStep> steps;
+
+        if (sortingService != null)
+            steps = sortingService.Execute(request.InputData);
+        else
+            steps = searchingService!.Execute(request.InputData, request.Target!.Value);
+
         stopwatch.Stop();
 
         var log = new ExecutionLog

@@ -1,6 +1,7 @@
 using algorithms_visualizer.Data;
 using algorithms_visualizer.Models;
 using algorithms_visualizer.Services;
+using algorithms_visualizer.Services.Searching;
 using algorithms_visualizer.Services.Sorting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -48,6 +49,7 @@ builder.Services.AddScoped<ISortingAlgorithm, BubbleSortService>();
 builder.Services.AddScoped<ISortingAlgorithm, SelectionSortService>();
 builder.Services.AddScoped<ISortingAlgorithm, InsertionSortService>();
 builder.Services.AddScoped<ISortingAlgorithm, MergeSortService>();
+builder.Services.AddScoped<ISearchingAlgorithm, BinarySearchService>();
 
 var app = builder.Build();
 
