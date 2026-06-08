@@ -1,0 +1,118 @@
+@model IEnumerable<UserListItemViewModel>
+
+@{
+    ViewData["Title"] = "Użytkownicy";
+}
+
+<h1>Użytkownicy</h1>
+<p><a asp-action="Index">← Powrót do panelu</a></p>
+
+@if (TempData["Success"] is string successMessage)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @successMessage
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Zamknij"></button>
+    </div>
+}
+
+@if (TempData["Error"] is string errorMessage)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        @errorMessage
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Zamknij"></button>
+    </div>
+}
+
+@if (!Model.Any())
+{
+    <p class="text-muted">Brak zarejestrowanych użytkowników</p>
+}
+else
+{
+    <table class="table table-striped align-middle">
+        <thead>
+            <tr>
+                <th>Avatar</th>
+                <th>Email</th>
+                <th>Nickname</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Akcje</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+                var initial = string.IsNullOrWhiteSpace(user.Email)
+                    ? "?"
+                    : user.Email[..1].ToUpperInvariant();
+
+                <tr>
+                    <td style="width: 60px;">
+                        @if (!string.IsNullOrWhiteSpace(user.AvatarPath))
+                        {
+                            <img src="@user.AvatarPath" alt="Avatar użytkownika @user.Email" class="rounded-circle" width="40" height="40" />
+                        }
+                        else
+                        {
+                            <span class="d-inline-flex align-items-center justify-content-center rounded-circle bg-secondary text-white" style="width: 40px; height: 40px;">
+                                @initial
+                            </span>
+                        }
+                    </td>
+                    <td>@user.Email</td>
+                    <td>
+                        @if (!string.IsNullOrWhiteSpace(user.Nickname))
+                        {
+                            @user.Nickname
+                        }
+                        else
+                        {
+                            <span class="text-muted">(nie ustawiono)</span>
+                        }
+                    </td>
+                    <td>
+                        @if (user.Roles.Any())
+                        {
+                            foreach (var role in user.Roles)
+                            {
+                                <span class="badge bg-primary">@role</span>
+                            }
+                        }
+                        else
+                        {
+                            <span class="text-muted">(brak)</span>
+                        }
+                    </td>
+                    <td>
+                        @if (user.IsBanned)
+                        {
+                            <span class="badge bg-danger">Zbanowany</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-success">Aktywny</span>
+                        }
+                    </td>
+                    <td>
+                        @if (user.IsBanned)
+                        {
+                            <form asp-action="UnbanUser" asp-route-id="@user.Id" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-sm btn-success">Odbanuj</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <form asp-action="BanUser" asp-route-id="@user.Id" method="post" class="d-inline"
+                                  onsubmit="return confirm('Zbanować tego użytkownika?');">
+                                @Html.AntiForgeryToken()
+                                <button type="submit" class="btn btn-sm btn-danger">Zbanuj</button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

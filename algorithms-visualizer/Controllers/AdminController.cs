@@ -1,6 +1,7 @@
 using algorithms_visualizer.Data;
 using algorithms_visualizer.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,10 +11,12 @@ namespace algorithms_visualizer.Controllers;
 public class AdminController : Controller
 {
     private readonly AppDbContext _context;
+    private readonly UserManager<AppUser> _userManager;
 
-    public AdminController(AppDbContext context)
+    public AdminController(AppDbContext context, UserManager<AppUser> userManager)
     {
         _context = context;
+        _userManager = userManager;
     }
 
     public async Task<IActionResult> Index()
@@ -23,6 +26,66 @@ public class AdminController : Controller
         ViewBag.ExecutionsCount = await _context.ExecutionLogs.CountAsync();
 
         return View();
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> Users()
+    {
+        var users = await _userManager.Users
+            .OrderBy(user => user.Email)
+            .ToListAsync();
+
+        var model = new List<UserListItemViewModel>();
+
+        foreach (var user in users)
+        {
+            var roles = await _userManager.GetRolesAsync(user);
+
+            model.Add(new UserListItemViewModel
+            {
+                Id = user.Id,
+                Email = user.Email ?? string.Empty,
+                Nickname = user.Nickname,
+                AvatarPath = user.AvatarPath,
+                Roles = roles.ToList(),
+                IsBanned = user.LockoutEnd.HasValue && user.LockoutEnd > DateTimeOffset.UtcNow
+            });
+        }
+
+        return View(model);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> BanUser(string id)
+    {
+        var user = await _userManager.FindByIdAsync(id);
+        if (user == null) return NotFound();
+
+        if (id == _userManager.GetUserId(User))
+        {
+            TempData["Error"] = "Nie możesz zbanować samego siebie";
+            return RedirectToAction(nameof(Users));
+        }
+
+        await _userManager.SetLockoutEnabledAsync(user, true);
+        await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.UtcNow.AddYears(100));
+        TempData["Success"] = $"Użytkownik {user.Email} został zbanowany";
+
+        return RedirectToAction(nameof(Users));
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> UnbanUser(string id)
+    {
+        var user = await _userManager.FindByIdAsync(id);
+        if (user == null) return NotFound();
+
+        await _userManager.SetLockoutEndDateAsync(user, null);
+        TempData["Success"] = $"Użytkownik {user.Email} został odbanowany";
+
+        return RedirectToAction(nameof(Users));
     }
 
     public async Task<IActionResult> Algorithms()
