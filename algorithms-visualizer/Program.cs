@@ -1,6 +1,7 @@
 using algorithms_visualizer.Data;
 using algorithms_visualizer.Models;
 using algorithms_visualizer.Services;
+using algorithms_visualizer.Services.Graphs;
 using algorithms_visualizer.Services.Searching;
 using algorithms_visualizer.Services.Sorting;
 using Microsoft.AspNetCore.Identity;
@@ -50,6 +51,8 @@ builder.Services.AddScoped<ISortingAlgorithm, SelectionSortService>();
 builder.Services.AddScoped<ISortingAlgorithm, InsertionSortService>();
 builder.Services.AddScoped<ISortingAlgorithm, MergeSortService>();
 builder.Services.AddScoped<ISearchingAlgorithm, BinarySearchService>();
+builder.Services.AddScoped<IGraphAlgorithm, BfsService>();
+builder.Services.AddScoped<IGraphAlgorithm, DfsService>();
 
 var app = builder.Build();
 

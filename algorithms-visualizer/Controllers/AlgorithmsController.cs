@@ -15,15 +15,18 @@ public class AlgorithmsController : ControllerBase
     private readonly AppDbContext _context;
     private readonly IEnumerable<ISortingAlgorithm> _algorithms;
     private readonly IEnumerable<ISearchingAlgorithm> _searchingAlgorithms;
+    private readonly IEnumerable<IGraphAlgorithm> _graphAlgorithms;
 
     public AlgorithmsController(
         AppDbContext context,
         IEnumerable<ISortingAlgorithm> algorithms,
-        IEnumerable<ISearchingAlgorithm> searchingAlgorithms)
+        IEnumerable<ISearchingAlgorithm> searchingAlgorithms,
+        IEnumerable<IGraphAlgorithm> graphAlgorithms)
     {
         _context = context;
         _algorithms = algorithms;
         _searchingAlgorithms = searchingAlgorithms;
+        _graphAlgorithms = graphAlgorithms;
     }
 
     [HttpGet]
@@ -53,12 +56,48 @@ public class AlgorithmsController : ControllerBase
     [HttpPost("execute")]
     public async Task<IActionResult> Execute([FromBody] ExecuteAlgorithmRequest request)
     {
+        var graphService = _graphAlgorithms.FirstOrDefault(a =>
+            a.Name.Equals(request.AlgorithmName, StringComparison.OrdinalIgnoreCase));
+
+        if (graphService != null)
+        {
+            if (request.Vertices == null || request.Vertices.Length == 0)
+                return BadRequest("Vertices are required for graph algorithms");
+            if (request.Edges == null)
+                return BadRequest("Edges are required for graph algorithms");
+            if (request.StartVertex == null)
+                return BadRequest("Start vertex is required for graph algorithms");
+
+            var stopwatch = Stopwatch.StartNew();
+            var graphSteps = graphService.Execute(request.Vertices, request.Edges, request.StartVertex.Value);
+            stopwatch.Stop();
+
+            var graphLog = new ExecutionLog
+            {
+                AlgorithmName = request.AlgorithmName,
+                InputSize = request.Vertices.Length,
+                TotalSteps = graphSteps.Count,
+                ExecutionTimeMs = stopwatch.ElapsedMilliseconds,
+                RanAt = DateTime.UtcNow
+            };
+            _context.ExecutionLogs.Add(graphLog);
+            await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                steps = graphSteps,
+                totalSteps = graphSteps.Count,
+                executionTimeMs = stopwatch.ElapsedMilliseconds
+            });
+        }
 
         if (request.InputData == null || request.InputData.Length == 0)
             return BadRequest("Input data is required");
 
-        var sortingService = _algorithms.FirstOrDefault(a => a.Name.Equals(request.AlgorithmName, StringComparison.OrdinalIgnoreCase));
-        var searchingService = _searchingAlgorithms.FirstOrDefault(a => a.Name.Equals(request.AlgorithmName, StringComparison.OrdinalIgnoreCase));
+        var sortingService = _algorithms.FirstOrDefault(a =>
+            a.Name.Equals(request.AlgorithmName, StringComparison.OrdinalIgnoreCase));
+        var searchingService = _searchingAlgorithms.FirstOrDefault(a =>
+            a.Name.Equals(request.AlgorithmName, StringComparison.OrdinalIgnoreCase));
 
         if (sortingService == null && searchingService == null)
             return NotFound("Algorithm not found");
@@ -66,7 +105,7 @@ public class AlgorithmsController : ControllerBase
         if (searchingService != null && request.Target == null)
             return BadRequest("Target value is required for searching algorithms");
 
-        var stopwatch = Stopwatch.StartNew();
+        var sw = Stopwatch.StartNew();
         List<AlgorithmStep> steps;
 
         if (sortingService != null)
@@ -74,14 +113,14 @@ public class AlgorithmsController : ControllerBase
         else
             steps = searchingService!.Execute(request.InputData, request.Target!.Value);
 
-        stopwatch.Stop();
+        sw.Stop();
 
         var log = new ExecutionLog
         {
             AlgorithmName = request.AlgorithmName,
             InputSize = request.InputData.Length,
             TotalSteps = steps.Count,
-            ExecutionTimeMs = stopwatch.ElapsedMilliseconds,
+            ExecutionTimeMs = sw.ElapsedMilliseconds,
             RanAt = DateTime.UtcNow
         };
         _context.ExecutionLogs.Add(log);
@@ -91,7 +130,7 @@ public class AlgorithmsController : ControllerBase
         {
             steps,
             totalSteps = steps.Count,
-            executionTimeMs = stopwatch.ElapsedMilliseconds
+            executionTimeMs = sw.ElapsedMilliseconds
         });
     }
 }
