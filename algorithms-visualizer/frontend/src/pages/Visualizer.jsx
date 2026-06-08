@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router";
 import { getAlgorithm } from "../lib/api";
 import SortVisualizer from "../components/SortVisualizer";
+import SearchVisualizer from "../components/SearchVisualizer";
+import GraphVisualizer from "../components/GraphVisualizer";
 
 export default function Visualizer() {
   const { id } = useParams();
@@ -48,12 +50,18 @@ export default function Visualizer() {
             {algorithm.pseudoCode}
           </pre>
 
-          {algorithm.category?.slug === "sorting" ? (
+          {algorithm.category?.slug === "sorting" && (
             <SortVisualizer algorithmName={algorithm.name} />
-          ) : (
+          )}
+          {algorithm.category?.slug === "searching" && (
+            <SearchVisualizer algorithmName={algorithm.name} />
+          )}
+          {algorithm.category?.slug === "graphs" && (
+            <GraphVisualizer algorithmName={algorithm.name} />
+          )}
+          {!["sorting", "searching", "graphs"].includes(algorithm.category?.slug) && (
             <div className="mt-8 h-40 rounded-xl border-2 border-dashed border-obsidian-border flex items-center justify-center text-center text-obsidian-muted px-4">
-              Wizualizacja dla kategorii „{algorithm.category?.name}” jest w przygotowaniu -
-              backend ma na razie tylko algorytmy sortowania.
+              Wizualizacja dla kategorii „{algorithm.category?.name}" jest w przygotowaniu.
             </div>
           )}
         </>
