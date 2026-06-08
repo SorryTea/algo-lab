@@ -133,4 +133,57 @@ public class AlgorithmsController : ControllerBase
             executionTimeMs = sw.ElapsedMilliseconds
         });
     }
+
+    [HttpPost("compare")]
+    public async Task<IActionResult> Compare([FromBody] CompareAlgorithmsRequest request)
+    {
+        if (request.AlgorithmNames == null || request.AlgorithmNames.Length == 0)
+            return BadRequest("At least one algorithm name is required");
+
+        if (request.InputData == null || request.InputData.Length == 0)
+            return BadRequest("Input data is required");
+
+        var dbAlgorithms = await _context.Algorithms.ToListAsync();
+        var results = new List<AlgorithmComparisonResult>();
+
+        foreach (var name in request.AlgorithmNames)
+        {
+            var dbAlgo = dbAlgorithms.FirstOrDefault(a =>
+                a.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+
+            var sortingService = _algorithms.FirstOrDefault(a =>
+                a.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
+
+            if (sortingService == null)
+            {
+                results.Add(new AlgorithmComparisonResult
+                {
+                    AlgorithmName = name,
+                    DisplayName = dbAlgo?.DisplayName ?? name,
+                    Error = "Algorithm not found or not supported for comparison"
+                });
+                continue;
+            }
+
+            var stopwatch = Stopwatch.StartNew();
+            var steps = sortingService.Execute(request.InputData);
+            stopwatch.Stop();
+
+            results.Add(new AlgorithmComparisonResult
+            {
+                AlgorithmName = name,
+                DisplayName = dbAlgo?.DisplayName ?? name,
+                TotalSteps = steps.Count,
+                ExecutionTimeMs = stopwatch.ElapsedMilliseconds,
+                ExecutionTimeMicroseconds = (long)stopwatch.Elapsed.TotalMicroseconds,
+                TimeComplexity = dbAlgo?.TimeComplexity ?? "unknown"
+            });
+        }
+
+        return Ok(new
+        {
+            inputSize = request.InputData.Length,
+            results
+        });
+    }
 }
