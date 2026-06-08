@@ -12,7 +12,7 @@ export default function Navbar() {
     <header className="border-b border-obsidian-border bg-obsidian-surface">
       <nav className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
         <Link to="/" className="text-lg font-bold text-violet-400">
-          🧩 Algo<span className="text-obsidian-text">Lab</span>
+          Algo<span className="text-obsidian-text">Lab</span>
         </Link>
         <div className="flex items-center gap-1">
           <NavLink to="/" end className={linkClass}>
