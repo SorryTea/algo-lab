@@ -119,7 +119,7 @@ export default function SortVisualizer({ algorithmName }) {
             <button
               onClick={() => { setPlaying(false); setCurrent((c) => Math.max(0, c - 1)); }}
               className="px-3 py-2 rounded-lg border border-obsidian-border text-sm hover:border-violet-500"
-            >◀ Krok</button>
+            >Krok</button>
 
             {atEnd ? (
               <button
@@ -130,13 +130,13 @@ export default function SortVisualizer({ algorithmName }) {
               <button
                 onClick={() => setPlaying((p) => !p)}
                 className="px-4 py-2 rounded-lg bg-violet-600 text-white text-sm font-medium hover:bg-violet-500"
-              >{playing ? "⏸ Pauza" : "▶ Odtwórz"}</button>
+              >{playing ? "Pauza" : "Odtwórz"}</button>
             )}
 
             <button
               onClick={() => { setPlaying(false); setCurrent((c) => Math.min(steps.length - 1, c + 1)); }}
               className="px-3 py-2 rounded-lg border border-obsidian-border text-sm hover:border-violet-500"
-            >Krok ▶</button>
+            >Krok</button>
 
             <select
               value={delay}

@@ -52,7 +52,7 @@ export default function Visualizer() {
             <SortVisualizer algorithmName={algorithm.name} />
           ) : (
             <div className="mt-8 h-40 rounded-xl border-2 border-dashed border-obsidian-border flex items-center justify-center text-center text-obsidian-muted px-4">
-              Wizualizacja dla kategorii „{algorithm.category?.name}” jest w przygotowaniu —
+              Wizualizacja dla kategorii „{algorithm.category?.name}” jest w przygotowaniu -
               backend ma na razie tylko algorytmy sortowania.
             </div>
           )}

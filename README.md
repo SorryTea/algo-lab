@@ -73,7 +73,7 @@ cd algo-lab
 
 ### 2. Przygotowanie bazy danych
 
-Aplikacja używa SQLite. Plik bazy nie jest w repozytorium — zostanie utworzony lokalnie przy pierwszym uruchomieniu backendu. Migracje i dane startowe są aplikowane automatycznie.
+Aplikacja używa SQLite. Plik bazy nie jest w repozytorium - zostanie utworzony lokalnie przy pierwszym uruchomieniu backendu. Migracje i dane startowe są aplikowane automatycznie.
 
 **Nic nie trzeba robić ręcznie - przejdź do kroku 3.**
 

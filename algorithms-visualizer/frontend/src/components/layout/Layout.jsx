@@ -9,7 +9,7 @@ export default function Layout() {
         <Outlet />
       </main>
       <footer className="border-t border-obsidian-border py-4 text-center text-sm text-obsidian-muted">
-        Algorithms Visualizer — projekt akademicki
+        Algorithms Visualizer - projekt akademicki
       </footer>
     </div>
   );
