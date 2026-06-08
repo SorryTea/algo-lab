@@ -12,11 +12,11 @@ export async function getAlgorithm(id) {
   return res.json();
 }
 
-export async function executeAlgorithm(algorithmName, inputData) {
+export async function executeAlgorithm(algorithmName, inputData, extra = {}) {
   const res = await fetch(`${API_BASE}/algorithms/execute`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ algorithmName, inputData }),
+    body: JSON.stringify({ algorithmName, inputData, ...extra }),
   });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   return res.json();
