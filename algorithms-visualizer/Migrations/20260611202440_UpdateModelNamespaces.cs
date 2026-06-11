@@ -5,10 +5,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace algorithms_visualizer.Migrations
 {
-    /// <inheritdoc />
     public partial class UpdateModelNamespaces : Migration
     {
-        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
@@ -103,7 +101,6 @@ namespace algorithms_visualizer.Migrations
                 column: "CategoryId");
         }
 
-        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(

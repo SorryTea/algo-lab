@@ -14,7 +14,6 @@ namespace algorithms_visualizer.Migrations
     [Migration("20260611202440_UpdateModelNamespaces")]
     partial class UpdateModelNamespaces
     {
-        /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618

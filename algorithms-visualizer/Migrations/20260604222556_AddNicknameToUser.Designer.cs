@@ -14,7 +14,6 @@ namespace algorithms_visualizer.Migrations
     [Migration("20260604222556_AddNicknameToUser")]
     partial class AddNicknameToUser
     {
-        /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618

@@ -4,16 +4,13 @@
 
 namespace algorithms_visualizer.Migrations
 {
-    /// <inheritdoc />
     public partial class AddForumTables : Migration
     {
-        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
 
         }
 
-        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
 

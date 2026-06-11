@@ -14,7 +14,6 @@ namespace algorithms_visualizer.Migrations
     [Migration("20260604221218_AddAvatarPathToUser")]
     partial class AddAvatarPathToUser
     {
-        /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
