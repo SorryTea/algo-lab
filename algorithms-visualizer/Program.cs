@@ -63,6 +63,7 @@ using (var scope = app.Services.CreateScope())
     var db = services.GetRequiredService<AppDbContext>();
     db.Database.Migrate();
     DbSeeder.Seed(db);
+    DbSeeder.SeedForumCategories(db);
 
     var userManager = services.GetRequiredService<UserManager<AppUser>>();
     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
