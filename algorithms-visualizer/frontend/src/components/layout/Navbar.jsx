@@ -21,6 +21,9 @@ export default function Navbar() {
           <NavLink to="/algorithms" className={linkClass}>
             Algorytmy
           </NavLink>
+          <NavLink to="/compare" className={linkClass}>
+            Porównaj
+          </NavLink>
           <NavLink to="/about" className={linkClass}>
             O projekcie
           </NavLink>
