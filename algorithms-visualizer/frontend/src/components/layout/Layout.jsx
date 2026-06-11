@@ -1,13 +1,10 @@
-import { Outlet } from "react-router";
 import Navbar from "./Navbar";
 
-export default function Layout() {
+export default function Layout({ children }) {
   return (
     <div className="min-h-screen flex flex-col bg-obsidian-bg text-obsidian-text">
       <Navbar />
-      <main className="flex-1 w-full max-w-6xl mx-auto px-4 py-8">
-        <Outlet />
-      </main>
+      <main className="flex-1 w-full max-w-6xl mx-auto px-4 py-8">{children}</main>
       <footer className="border-t border-obsidian-border py-4 text-center text-sm text-obsidian-muted">
         Algorithms Visualizer - projekt akademicki
       </footer>
