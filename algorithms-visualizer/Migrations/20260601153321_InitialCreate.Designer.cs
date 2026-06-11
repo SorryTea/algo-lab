@@ -14,7 +14,6 @@ namespace algorithms_visualizer.Migrations
     [Migration("20260601153321_InitialCreate")]
     partial class InitialCreate
     {
-        /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618

@@ -1,6 +1,6 @@
 using System.Diagnostics;
 using algorithms_visualizer.Data;
-using algorithms_visualizer.Models;
+using algorithms_visualizer.Models.Algorithms;
 using algorithms_visualizer.Services;
 using algorithms_visualizer.Services.Models;
 using Microsoft.AspNetCore.Mvc;

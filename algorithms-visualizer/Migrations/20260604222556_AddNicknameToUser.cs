@@ -4,10 +4,8 @@
 
 namespace algorithms_visualizer.Migrations
 {
-    /// <inheritdoc />
     public partial class AddNicknameToUser : Migration
     {
-        /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
@@ -18,7 +16,6 @@ namespace algorithms_visualizer.Migrations
                 nullable: true);
         }
 
-        /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(

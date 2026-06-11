@@ -14,7 +14,6 @@ namespace algorithms_visualizer.Migrations
     [Migration("20260603110448_AddIdentity")]
     partial class AddIdentity
     {
-        /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618

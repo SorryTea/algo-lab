@@ -1,4 +1,6 @@
-using algorithms_visualizer.Models;
+using algorithms_visualizer.Models.Algorithms;
+using algorithms_visualizer.Models.Forum;
+using algorithms_visualizer.Models.Users;
 using Microsoft.AspNetCore.Identity;
 
 namespace algorithms_visualizer.Data
@@ -129,6 +131,21 @@ namespace algorithms_visualizer.Data
                 await userManager.AddToRoleAsync(adminUser, adminRole);
             }
 
+        }
+
+        public static void SeedForumCategories(AppDbContext context)
+        {
+            if (context.ForumCategories.Any())
+                return;
+
+            context.ForumCategories.AddRange(
+                new ForumCategory { Name = "Ogólne", Slug = "general" },
+                new ForumCategory { Name = "Pytania o algorytmy", Slug = "algorithms-help" },
+                new ForumCategory { Name = "Propozycje", Slug = "proposals" },
+                new ForumCategory { Name = "Bugi", Slug = "bugs" }
+            );
+
+            context.SaveChanges();
         }
     }
 }

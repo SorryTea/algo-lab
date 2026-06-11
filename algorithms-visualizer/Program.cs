@@ -1,5 +1,5 @@
 using algorithms_visualizer.Data;
-using algorithms_visualizer.Models;
+using algorithms_visualizer.Models.Users;
 using algorithms_visualizer.Services;
 using algorithms_visualizer.Services.Graphs;
 using algorithms_visualizer.Services.Searching;
@@ -63,6 +63,7 @@ using (var scope = app.Services.CreateScope())
     var db = services.GetRequiredService<AppDbContext>();
     db.Database.Migrate();
     DbSeeder.Seed(db);
+    DbSeeder.SeedForumCategories(db);
 
     var userManager = services.GetRequiredService<UserManager<AppUser>>();
     var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();

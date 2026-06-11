@@ -1,8 +1,8 @@
-@model algorithms_visualizer.Models.Algorithm
+@model algorithms_visualizer.Models.Algorithms.Algorithm
 
 @{
     ViewData["Title"] = $"Edycja: {Model.DisplayName}";
-    var categories = ViewBag.Categories as IEnumerable<algorithms_visualizer.Models.Category>;
+    var categories = ViewBag.Categories as IEnumerable<algorithms_visualizer.Models.Algorithms.Category>;
 }
 
 <h1>Edycja algorytmu</h1>
