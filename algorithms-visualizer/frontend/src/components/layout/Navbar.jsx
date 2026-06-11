@@ -1,4 +1,5 @@
 import { NavLink, Link } from "react-router";
+import ThemeToggle from "../ThemeToggle";
 
 const linkClass = ({ isActive }) =>
   `px-3 py-2 rounded-md text-sm font-medium transition-colors ${
@@ -27,6 +28,8 @@ export default function Navbar() {
           <NavLink to="/about" className={linkClass}>
             O projekcie
           </NavLink>
+
+          <ThemeToggle />
 
           <span className="mx-2 h-5 w-px bg-obsidian-border" />
 
