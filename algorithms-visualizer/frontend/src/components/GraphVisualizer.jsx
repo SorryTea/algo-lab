@@ -15,18 +15,20 @@ function parseEdges(text) {
     .filter((p) => p.length === 2 && p.every(Number.isInteger));
 }
 
-function randomGraph() {
-  const n = 5 + Math.floor(Math.random() * 3); 
+function randomGraph(n) {
   const edges = [];
-  for (let i = 1; i < n; i++) edges.push([Math.floor(Math.random() * i), i]); 
-  const extra = 1 + Math.floor(Math.random() * 2);
+  for (let i = 1; i < n; i++) {
+    edges.push([Math.floor(Math.random() * i), i]);
+  }
+  const extra = Math.max(1, Math.floor(n / 2));
   for (let k = 0; k < extra; k++) {
     const a = Math.floor(Math.random() * n);
     const b = Math.floor(Math.random() * n);
-    if (a !== b && !edges.some(([x, y]) => (x === a && y === b) || (x === b && y === a)))
+    if (a !== b && !edges.some(([x, y]) => (x === a && y === b) || (x === b && y === a))) {
       edges.push([a, b]);
+    }
   }
-  return { n, edges };
+  return edges;
 }
 
 export default function GraphVisualizer({ algorithmName }) {
@@ -42,7 +44,8 @@ export default function GraphVisualizer({ algorithmName }) {
   const timer = useRef(null);
 
   function applyRandom() {
-    const { n, edges } = randomGraph();
+    const n = Math.max(2, Math.min(12, Number(verticesCount) || 6));
+    const edges = randomGraph(n);
     setVerticesCount(n);
     setEdgesText(edges.map(([a, b]) => `${a}-${b}`).join(", "));
     setStartVertex(0);
