@@ -61,6 +61,10 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--ob-text);
 }
 
+.text-muted {
+  color: var(--ob-muted) !important;
+}
+
 hr {
   border-color: var(--ob-border);
   opacity: 1;
@@ -157,9 +161,14 @@ a:hover {
   color: var(--ob-text);
   --bs-table-bg: transparent;
   --bs-table-color: var(--ob-text);
+  --bs-table-striped-bg: rgba(139, 92, 246, 0.08);
+  --bs-table-striped-color: var(--ob-text);
+  --bs-table-hover-bg: rgba(139, 92, 246, 0.12);
+  --bs-table-hover-color: var(--ob-text);
 }
 
 .table > :not(caption) > * > * {
+  color: var(--ob-text);
   border-color: var(--ob-border);
   background-color: transparent;
 }

@@ -1,0 +1,35 @@
+@model IEnumerable<CategoryListItemViewModel>
+
+@{
+    ViewData["Title"] = "Kategorie";
+}
+
+<h1>Kategorie</h1>
+<p><a asp-action="Index">← Powrót do panelu</a></p>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">Brak kategorii</p>
+}
+else
+{
+    <table class="table table-striped align-middle">
+        <thead>
+            <tr>
+                <th>Nazwa</th>
+                <th>Slug</th>
+                <th>Algorytmy</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var category in Model)
+            {
+                <tr>
+                    <td>@category.Name</td>
+                    <td><code>@category.Slug</code></td>
+                    <td>@category.AlgorithmsCount</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
