@@ -1,4 +1,4 @@
-namespace algorithms_visualizer.Models;
+namespace algorithms_visualizer.Models.Users;
 
 public class UserListItemViewModel
 {

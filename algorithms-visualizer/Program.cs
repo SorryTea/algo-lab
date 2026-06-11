@@ -1,5 +1,5 @@
 using algorithms_visualizer.Data;
-using algorithms_visualizer.Models;
+using algorithms_visualizer.Models.Users;
 using algorithms_visualizer.Services;
 using algorithms_visualizer.Services.Graphs;
 using algorithms_visualizer.Services.Searching;

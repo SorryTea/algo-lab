@@ -1,4 +1,6 @@
-using algorithms_visualizer.Models;
+using algorithms_visualizer.Models.Algorithms;
+using algorithms_visualizer.Models.Forum;
+using algorithms_visualizer.Models.Users;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;

@@ -1,5 +1,6 @@
 using algorithms_visualizer.Data;
-using algorithms_visualizer.Models;
+using algorithms_visualizer.Models.Algorithms;
+using algorithms_visualizer.Models.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

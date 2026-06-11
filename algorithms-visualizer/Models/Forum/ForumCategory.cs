@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace algorithms_visualizer.Models;
+namespace algorithms_visualizer.Models.Forum;
 
 public class ForumCategory
 {
