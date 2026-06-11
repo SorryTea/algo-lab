@@ -5,6 +5,7 @@ import Algorithms from "./pages/Algorithms";
 import Visualizer from "./pages/Visualizer";
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
+import Compare from "./pages/Compare";
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
       <Route element={<Layout />}>
         <Route index element={<Home />} />
         <Route path="algorithms" element={<Algorithms />} />
+        <Route path="compare" element={<Compare />} />
         <Route path="/algorithms/:id" element={<Visualizer />} />
         <Route path="about" element={<About />} />
         <Route path="*" element={<NotFound />} />
