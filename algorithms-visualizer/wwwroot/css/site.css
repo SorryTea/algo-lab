@@ -1,5 +1,18 @@
+:root {
+  --ob-bg: #0c0a14;
+  --ob-surface: #141020;
+  --ob-elevated: #1e1830;
+  --ob-border: #2d2550;
+  --ob-text: #ede8ff;
+  --ob-muted: #9088bb;
+  --ob-violet: #8b5cf6;
+  --ob-violet-strong: #7c3aed;
+}
+
 html {
   font-size: 14px;
+  position: relative;
+  min-height: 100%;
 }
 
 @media (min-width: 768px) {
@@ -8,24 +21,172 @@ html {
   }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
-}
-
 body {
   margin-bottom: 60px;
+  background-color: var(--ob-bg) !important;
+  color: var(--ob-text);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+.navbar.bg-white,
+.navbar.navbar-light {
+  background-color: var(--ob-surface) !important;
+  border-bottom: 1px solid var(--ob-border) !important;
+  box-shadow: none !important;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
+.navbar-brand {
+  color: var(--ob-violet) !important;
+  font-weight: 700;
+}
+
+.navbar .nav-link,
+.navbar .nav-link.text-dark {
+  color: var(--ob-muted) !important;
+}
+
+.navbar .nav-link:hover {
+  color: var(--ob-text) !important;
+}
+
+.navbar-toggler {
+  border-color: var(--ob-border) !important;
+}
+
+.navbar-toggler-icon {
+  filter: invert(1) brightness(1.6);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: var(--ob-text);
+}
+
+hr {
+  border-color: var(--ob-border);
+  opacity: 1;
+}
+
+a {
+  color: #a78bfa;
+}
+
+a:hover {
+  color: #c4b5fd;
+}
+
+.form-control,
+.form-select {
+  background-color: var(--ob-elevated) !important;
+  border: 1px solid var(--ob-border) !important;
+  color: var(--ob-text) !important;
+}
+
+.form-control::placeholder {
+  color: var(--ob-muted) !important;
   text-align: start;
+}
+
+.form-floating > .form-control::placeholder,
+.form-floating > .form-control-plaintext::placeholder {
+  color: transparent !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+  background-color: var(--ob-elevated) !important;
+  border-color: var(--ob-violet) !important;
+  color: var(--ob-text) !important;
+  box-shadow: 0 0 0 0.2rem rgba(139, 92, 246, 0.25) !important;
+}
+
+.form-floating > label {
+  color: var(--ob-muted);
+}
+
+.form-check-input {
+  background-color: var(--ob-elevated);
+  border-color: var(--ob-border);
+}
+
+.form-check-input:checked {
+  background-color: var(--ob-violet);
+  border-color: var(--ob-violet);
+}
+
+.btn-primary {
+  color: #fff !important;
+  background-color: var(--ob-violet-strong) !important;
+  border-color: var(--ob-violet-strong) !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: var(--ob-violet) !important;
+  border-color: var(--ob-violet) !important;
+}
+
+.btn-outline-primary,
+.btn-secondary,
+.btn-default {
+  color: var(--ob-text) !important;
+  background-color: transparent !important;
+  border-color: var(--ob-border) !important;
+}
+
+.btn-outline-primary:hover,
+.btn-secondary:hover,
+.btn-default:hover {
+  border-color: var(--ob-violet) !important;
+  color: #fff !important;
+}
+
+.btn:focus,
+.btn:active:focus,
+.form-control:focus,
+.form-check-input:focus {
+  box-shadow: 0 0 0 0.2rem rgba(139, 92, 246, 0.25);
+}
+
+.card {
+  background-color: var(--ob-elevated);
+  border-color: var(--ob-border);
+  color: var(--ob-text);
+}
+
+.table {
+  color: var(--ob-text);
+  --bs-table-bg: transparent;
+  --bs-table-color: var(--ob-text);
+}
+
+.table > :not(caption) > * > * {
+  border-color: var(--ob-border);
+  background-color: transparent;
+}
+
+.text-danger,
+.field-validation-error,
+.validation-summary-errors {
+  color: #f87171 !important;
+}
+
+.alert-danger {
+  background-color: rgba(248, 113, 113, 0.1);
+  border-color: rgba(248, 113, 113, 0.4);
+  color: #fecaca;
+}
+
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  white-space: nowrap;
+  line-height: 60px;
+  background-color: var(--ob-surface);
+  border-top: 1px solid var(--ob-border) !important;
+  color: var(--ob-muted) !important;
+}
+
+.footer a {
+  color: #a78bfa !important;
 }
