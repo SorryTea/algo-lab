@@ -12,5 +12,9 @@ namespace algorithms_visualizer.Data
         public DbSet<Category> Categories { get; set; }
         public DbSet<Algorithm> Algorithms { get; set; }
         public DbSet<ExecutionLog> ExecutionLogs { get; set; }
+
+        public DbSet<ForumCategory> ForumCategories { get; set; }
+        public DbSet<ForumPost> ForumPosts { get; set; }
+        public DbSet<ForumComment> ForumComments { get; set; }
     }
 }
