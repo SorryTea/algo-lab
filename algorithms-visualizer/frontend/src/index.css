@@ -2,11 +2,29 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --ob-bg: 245 244 250;
+  --ob-surface: 237 235 247;
+  --ob-elevated: 255 255 255;
+  --ob-border: 225 221 240;
+  --ob-text: 26 22 43;
+  --ob-muted: 104 97 138;
+}
+
+.dark {
+  --ob-bg: 12 10 20;
+  --ob-surface: 20 16 32;
+  --ob-elevated: 30 24 48;
+  --ob-border: 45 37 80;
+  --ob-text: 237 232 255;
+  --ob-muted: 144 136 187;
+}
+
 html,
 body,
 #root {
   margin: 0;
   min-height: 100vh;
-  background-color: #0c0a14;
-  color: #ede8ff;
+  background-color: rgb(var(--ob-bg));
+  color: rgb(var(--ob-text));
 }

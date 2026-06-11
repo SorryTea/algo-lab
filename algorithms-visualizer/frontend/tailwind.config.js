@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
+  darkMode: 'class',
   content: [
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
@@ -8,12 +9,12 @@ export default {
     extend: {
       colors: {
         obsidian: {
-          bg:      '#0c0a14',
-          surface: '#141020',
-          elevated:'#1e1830',
-          border:  '#2d2550',
-          text:    '#ede8ff',
-          muted:   '#9088bb',
+          bg:      'rgb(var(--ob-bg) / <alpha-value>)',
+          surface: 'rgb(var(--ob-surface) / <alpha-value>)',
+          elevated:'rgb(var(--ob-elevated) / <alpha-value>)',
+          border:  'rgb(var(--ob-border) / <alpha-value>)',
+          text:    'rgb(var(--ob-text) / <alpha-value>)',
+          muted:   'rgb(var(--ob-muted) / <alpha-value>)',
         },
       },
     },
