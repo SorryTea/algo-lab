@@ -191,3 +191,29 @@ Nazwa pliku avatara jest generowana przez `Guid`, więc nie ma konfliktów nazw.
 ### Bezpieczeństwo
 
 W formularzach POST używany jest `AntiForgeryToken`, więc mamy ochronę przed CSRF. Przy avatarach sprawdzane są rozszerzenie pliku i rozmiar, a admin nie może zbanować sam siebie. Hasła nie są trzymane jako zwykły tekst, tylko obsługuje je ASP.NET Identity, które domyślnie hashuje je algorytmem PBKDF2.
+
+## Frontend
+
+Frontend to publiczna część aplikacji, czyli strona główna, lista algorytmów i same wizualizacje. Jest zrobiony w React + Vite + Tailwind CSS. Z backendem rozmawia przez REST API, więc React nie liczy algorytmów sam, tylko pobiera gotowe kroki animacji.
+
+### Architektura
+
+Projekt jest podzielony na `pages` i `components`. Routing obsługuje React Router v7. Główny `Layout` działa jak wspólna ramka strony: ma navbar, footer i miejsce na aktualną stronę przez `Outlet`.
+
+Najważniejsze strony to `Home`, `Algorithms`, `Visualizer`, `About` i `NotFound`. W komponentach są m.in. `Navbar`, `Layout`, `SortVisualizer`, `SearchVisualizer` i `GraphVisualizer`.
+
+### Komunikacja z API
+
+Warstwa `lib/api.js` trzyma funkcje do zapytań `fetch`, dzięki czemu komponenty nie muszą znać dokładnych endpointów. Vite ma proxy dla `/api`, które w trybie dev przekierowuje requesty na backend pod `https://localhost:7027`.
+
+Stan w komponentach jest ogarniany przez `useState` i `useEffect`. Widoki mają proste statusy typu `loading`, `error` i `ready`, więc użytkownik widzi, czy dane się ładują, czy coś poszło nie tak.
+
+### Wizualizacje
+
+Wizualizacje pobierają kroki z `/api/algorithms/execute` i odtwarzają je z wybraną prędkością. `SortVisualizer` pokazuje sortowanie jako słupki: inne kolory oznaczają elementy porównywane i już posortowane. Ma też kontrolki typu odtwórz, pauza, krok i reset.
+
+`SearchVisualizer` działa podobnie, ale jest pod Binary Search: pokazuje sprawdzany element i znaleziony wynik. `GraphVisualizer` rysuje graf jako wierzchołki w okręgu i krawędzie między nimi. Kolory pokazują aktualny wierzchołek, odwiedzone elementy i kolejkę/stos jako `frontier`.
+
+### Styling
+
+Styling jest oparty głównie o Tailwind CSS, czyli klasy utility pisane bezpośrednio w JSX. Projekt ma własną ciemną paletę `obsidian`, a głównym kolorem akcentu jest violet. Responsywność robimy przez breakpointy Tailwinda, np. `sm:`, `md:` i `lg:`.
