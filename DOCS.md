@@ -79,3 +79,89 @@ Przechowuje definicje algorytmów: nazwę techniczną (`Name`), nazwę wyświetl
 ### Tabela `ExecutionLog`
 
 Przechowuje historię uruchomień algorytmów: nazwę algorytmu, rozmiar danych wejściowych, liczbę wygenerowanych kroków, czas wykonania w milisekundach oraz datę uruchomienia. **Świadomie nie używamy klucza obcego do `Algorithm`** - zamiast tego trzymamy `AlgorithmName` jako string. Dzięki temu logi pozostają w bazie nawet po usunięciu algorytmu przez administratora, co pozwala zachować pełną historię analityczną aplikacji.
+
+## API
+
+API to kilka endpointów REST, które zwracają dane w JSON-ie. Korzysta z nich frontend React, np. żeby pobrać algorytmy, odpalić wizualizację albo porównać sortowania.
+
+### Dostępne endpointy
+
+| Metoda | Ścieżka                   | Opis                                                                                                         |
+| ------ | ------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| GET    | `/api/algorithms`         | Lista widocznych algorytmów razem z kategoriami.                                                             |
+| GET    | `/api/algorithms/{id}`    | Szczegóły jednego algorytmu.                                                                                 |
+| POST   | `/api/algorithms/execute` | Uruchamia algorytm i zwraca kroki animacji, liczbę kroków oraz czas wykonania. Zapisuje też wpis w historii. |
+| POST   | `/api/algorithms/compare` | Porównuje algorytmy sortowania na tych samych danych i zwraca wyniki dla każdego z nich.                     |
+
+### Architektura serwisów algorytmów
+
+Algorytmy są podzielone na trzy grupy: sortowanie, wyszukiwanie i grafy. Każda grupa ma własny interfejs, więc kod nie miesza różnych typów algorytmów w jednym worku.
+
+Każdy serwis implementuje odpowiedni interfejs:
+
+- `ISortingAlgorithm` - algorytmy sortowania: Bubble Sort, Selection Sort, Insertion Sort, Merge Sort
+- `ISearchingAlgorithm` - algorytmy wyszukiwania: Binary Search
+- `IGraphAlgorithm` - algorytmy grafowe: BFS, DFS
+
+Serwisy są rejestrowane w Dependency Injection jako `Scoped`. `AlgorithmsController` dostaje listy `IEnumerable<I...>` i wybiera konkretny algorytm po polu `Name`, np. `bubble`, `dfs` albo `binary-search`. Dzięki temu nowy algorytm to głównie nowa klasa i wpis w `Program.cs`, a nie przepisywanie kontrolera.
+
+### Walidacja i błędy
+
+API używa zwykłych kodów HTTP:
+
+- `200 OK` - wszystko się udało, zwracamy dane JSON
+- `400 Bad Request` - brakuje danych albo request jest niepoprawny
+- `404 Not Found` - nie ma algorytmu o takim `id` albo takiej nazwie
+
+Kontroler sprawdza m.in. czy `InputData` nie jest puste, czy Binary Search ma `Target`, czy graf ma `Vertices`, `Edges` i `StartVertex`, oraz czy przy porównaniu podano `AlgorithmNames`.
+
+### Pełna dokumentacja API
+
+Pełna dokumentacja z parametrami i przykładami jest pod `/swagger` w trybie deweloperskim. Generuje ją automatycznie Swashbuckle.
+
+## Algorytmy
+
+W tym projekcie algorytmy to konkretne klasy w C#, które wykonują się po stronie serwera. Obecnie mamy 7 algorytmów: 4 sortowania, 1 wyszukiwania i 2 grafowe. Każdy z nich nie zwraca tylko końcowego wyniku, ale całą listę kroków, którą frontend może potem ładnie odtworzyć jako animację.
+
+### Reprezentacja kroku - `AlgorithmStep`
+
+Sortowanie i wyszukiwanie zwracają listę obiektów `AlgorithmStep`. Każdy krok opisuje jeden stan tablicy. Tablica jest klonowana przy każdym kroku, żeby frontend miał gotową "klatkę" animacji i mógł odtworzyć ją od dowolnego momentu.
+
+Pola `AlgorithmStep`:
+
+- `StepIndex` - numer kroku
+- `Array` - aktualny stan tablicy
+- `Comparing` - indeksy elementów, które są teraz sprawdzane
+- `SortedIndices` - indeksy uznane za gotowe albo znalezione
+- `Swapped` - informacja, czy w tym kroku była zamiana
+- `Description` - krótki opis dla użytkownika
+
+### Algorytmy sortowania
+
+Wszystkie sortowania implementują `ISortingAlgorithm` i pracują na tablicy liczb:
+
+- Bubble Sort - porównuje sąsiednie elementy i przepycha większe wartości na koniec
+- Selection Sort - szuka najmniejszego elementu i wstawia go na właściwe miejsce
+- Insertion Sort - buduje posortowaną część tablicy, dokładając elementy jeden po drugim
+- Merge Sort - dzieli tablicę na mniejsze części, sortuje je i scala z powrotem
+
+### Algorytmy wyszukiwania
+
+Do wyszukiwania mamy Binary Search. Algorytm sprawdza środkowy element, a potem odrzuca połowę zakresu, więc działa szybko, ale zakłada posortowane dane. Ma osobny interfejs `ISearchingAlgorithm`, bo oprócz tablicy potrzebuje jeszcze wartości `Target`, czyli tego, czego szukamy.
+
+### Algorytmy grafowe
+
+Algorytmy grafowe to BFS i DFS. Używają osobnego DTO `GraphAlgorithmStep`, bo graf ma inne dane niż tablica: wierzchołki, krawędzie, odwiedzone elementy, kolejkę/stos jako `Frontier` i aktualny wierzchołek `Current`.
+
+BFS wyszukuje sąsiadów prostym przejściem po krawędziach, więc jest czytelny, ale mniej wydajny (`O(V * E)`). DFS najpierw buduje listę sąsiedztwa, dzięki czemu działa wydajniej (`O(V + E)`). Fajnie to pokazuje różnicę między prostszą implementacją a bardziej zoptymalizowaną.
+
+### Dodawanie nowego algorytmu
+
+Dodanie nowego algorytmu jest dość proste:
+
+1. Stwórz klasę implementującą odpowiedni interfejs
+2. Zaimplementuj `Execute`, tak żeby generowało kroki animacji
+3. Zarejestruj serwis w `Program.cs` przez `AddScoped`
+4. Dodaj wpis w `DbSeeder`, jeśli algorytm ma być widoczny w UI
+
+Kontrolera zwykle nie trzeba ruszać, bo dostaje automatycznie wszystkie implementacje przez Dependency Injection.
