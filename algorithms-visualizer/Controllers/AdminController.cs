@@ -99,6 +99,32 @@ public class AdminController : Controller
         return View(algorithms);
     }
 
+    public async Task<IActionResult> Categories()
+    {
+        var categories = await _context.Categories
+            .Select(category => new CategoryListItemViewModel
+            {
+                Id = category.Id,
+                Name = category.Name,
+                Slug = category.Slug,
+                AlgorithmsCount = _context.Algorithms.Count(algorithm => algorithm.CategoryId == category.Id)
+            })
+            .OrderBy(category => category.Name)
+            .ToListAsync();
+
+        return View(categories);
+    }
+
+    public async Task<IActionResult> Logs()
+    {
+        var logs = await _context.ExecutionLogs
+            .OrderByDescending(log => log.RanAt)
+            .Take(200)
+            .ToListAsync();
+
+        return View(logs);
+    }
+
     public async Task<IActionResult> EditAlgorithm(int id)
     {
         var algorithm = await _context.Algorithms.FindAsync(id);

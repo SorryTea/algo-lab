@@ -1,0 +1,40 @@
+@model IEnumerable<ExecutionLog>
+
+@{
+    ViewData["Title"] = "Historia uruchomień";
+}
+
+<h1>Historia uruchomień</h1>
+<p><a asp-action="Index">← Powrót do panelu</a></p>
+<p class="text-muted">Wyświetlane jest ostatnie 200 uruchomień.</p>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">Brak zapisanych uruchomień</p>
+}
+else
+{
+    <table class="table table-striped align-middle">
+        <thead>
+            <tr>
+                <th>Data</th>
+                <th>Algorytm</th>
+                <th>Rozmiar wejścia</th>
+                <th>Kroki</th>
+                <th>Czas</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var log in Model)
+            {
+                <tr>
+                    <td>@log.RanAt.ToString("yyyy-MM-dd HH:mm:ss") UTC</td>
+                    <td>@log.AlgorithmName</td>
+                    <td>@log.InputSize</td>
+                    <td>@log.TotalSteps</td>
+                    <td>@log.ExecutionTimeMs ms</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
