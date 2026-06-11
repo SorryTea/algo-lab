@@ -6,6 +6,7 @@ import Visualizer from "./pages/Visualizer";
 import About from "./pages/About";
 import NotFound from "./pages/NotFound";
 import Compare from "./pages/Compare";
+import Faq from "./pages/Faq";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Route path="/algorithms/:id" element={<Visualizer />} />
         <Route path="about" element={<About />} />
         <Route path="*" element={<NotFound />} />
+        <Route path="faq" element={<Faq />} />
       </Route>
     </Routes>
   );

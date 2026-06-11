@@ -28,6 +28,9 @@ export default function Navbar() {
           <NavLink to="/about" className={linkClass}>
             O projekcie
           </NavLink>
+          <NavLink to="/faq" className={linkClass}>
+            FAQ
+          </NavLink>
 
           <ThemeToggle />
 
