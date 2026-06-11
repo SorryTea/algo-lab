@@ -165,3 +165,29 @@ Dodanie nowego algorytmu jest dość proste:
 4. Dodaj wpis w `DbSeeder`, jeśli algorytm ma być widoczny w UI
 
 Kontrolera zwykle nie trzeba ruszać, bo dostaje automatycznie wszystkie implementacje przez Dependency Injection.
+
+## Panel administracyjny
+
+Panel administracyjny to część aplikacji dla osoby zarządzającej projektem. Jest zrobiony w klasycznych widokach Razor/MVC, a nie w React, bo to prostsze przy formularzach, autoryzacji i pracy z panelem admina. Frontend React zostaje głównie od wizualizacji algorytmów.
+
+### Autoryzacja
+
+Logowanie i role są oparte o ASP.NET Identity. Klasa `AppUser` rozszerza `IdentityUser` o dwa pola: `AvatarPath` i `Nickname`. Przy starcie aplikacji seedowane jest konto admina `admin@local` z hasłem `Admin123` oraz rola `Admin`. Zwykłe konta po rejestracji działają jak normalni użytkownicy bez dostępu do panelu admina.
+
+Cały `AdminController` ma atrybut `[Authorize(Roles = "Admin")]`, więc bez roli admina nie da się wejść do tych akcji. To trzyma logikę dostępu w jednym miejscu i nie trzeba sprawdzać uprawnień ręcznie w każdej metodzie.
+
+### Funkcjonalności
+
+Admin może zobaczyć dashboard ze statystykami: liczbą algorytmów, kategorii i uruchomień. Może też zarządzać algorytmami, czyli edytować ich metadane, przełączać `IsVisible` i usuwać wpisy. Jest też lista użytkowników z możliwością banowania przez ustawienie `LockoutEnd`.
+
+Zmiana nicku i avatara jest dostępna w profilu użytkownika. Dzięki temu konto może mieć prostą personalizację bez dokładania osobnego panelu tylko do profilu.
+
+### Profil użytkownika
+
+Profil jest oparty o scaffoldowaną stronę Identity `Manage/Index`. Użytkownik może tam zmienić `Nickname` i wgrać avatar. Upload przyjmuje pliki PNG, JPG, GIF i WEBP, maksymalnie do 2 MB.
+
+Nazwa pliku avatara jest generowana przez `Guid`, więc nie ma konfliktów nazw. Po wgraniu nowego avatara stary plik jest usuwany z dysku. Pliki trafiają do `wwwroot/uploads/avatars/` i są potem serwowane jak zwykłe statyczne zasoby aplikacji.
+
+### Bezpieczeństwo
+
+W formularzach POST używany jest `AntiForgeryToken`, więc mamy ochronę przed CSRF. Przy avatarach sprawdzane są rozszerzenie pliku i rozmiar, a admin nie może zbanować sam siebie. Hasła nie są trzymane jako zwykły tekst, tylko obsługuje je ASP.NET Identity, które domyślnie hashuje je algorytmem PBKDF2.
