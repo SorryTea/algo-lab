@@ -24,6 +24,22 @@ export default function Navbar() {
           <NavLink to="/about" className={linkClass}>
             O projekcie
           </NavLink>
+
+          <span className="mx-2 h-5 w-px bg-obsidian-border" />
+
+          <a
+            href="/Identity/Account/Login"
+            className="px-3 py-2 rounded-md text-sm font-medium text-obsidian-muted hover:bg-obsidian-elevated hover:text-obsidian-text transition-colors"
+          >
+            Zaloguj się
+          </a>
+          
+          <a
+            href="/Identity/Account/Register"
+            className="px-3 py-2 rounded-md text-sm font-medium bg-violet-600 text-white hover:bg-violet-500 transition-colors"
+          >
+            Zarejestruj się
+          </a>
         </div>
       </nav>
     </header>

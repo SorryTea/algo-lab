@@ -11,6 +11,16 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
       },
+      "/Identity": {
+        target: "https://localhost:7027",
+        changeOrigin: true,
+        secure: false,
+      },
+      "/Admin": {
+        target: "https://localhost:7027",
+        changeOrigin: true,
+        secure: false,
+      },
     },
   },
 });
