@@ -43,7 +43,7 @@ export default function SearchVisualizer({ algorithmName }) {
     try {
       const res = await executeAlgorithm(algorithmName, data, { target });
       setSteps(res.steps ?? []);
-      setMeta({ totalSteps: res.totalSteps, executionTimeMs: res.executionTimeMs });
+      setMeta({ totalSteps: res.totalSteps, timeUs: res.executionTimeMicroseconds ?? null });
       setCurrent(0);
       setStatus("ready");
       setPlaying(true);
@@ -102,7 +102,7 @@ export default function SearchVisualizer({ algorithmName }) {
       </div>
 
       <p className="text-xs text-obsidian-muted">
-        Tablica zostanie automatycznie posortowana — wyszukiwanie binarne wymaga
+        Tablica zostanie automatycznie posortowana - wyszukiwanie binarne wymaga
         uporządkowanych danych.
       </p>
 
@@ -180,7 +180,7 @@ export default function SearchVisualizer({ algorithmName }) {
           </p>
           {meta && (
             <p className="text-xs text-obsidian-muted">
-              Backend: {meta.totalSteps} kroków, {meta.executionTimeMs} ms
+              Backend: {meta.totalSteps} kroków{meta.timeUs != null ? ` · ${meta.timeUs} µs` : ""}
             </p>
           )}
         </>
