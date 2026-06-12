@@ -1,5 +1,6 @@
 using algorithms_visualizer.Data;
 using algorithms_visualizer.Models.Algorithms;
+using algorithms_visualizer.Models.Forum;
 using algorithms_visualizer.Models.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -124,6 +125,32 @@ public class AdminController : Controller
             .ToListAsync();
 
         return View(logs);
+    }
+
+    public async Task<IActionResult> ForumPosts()
+    {
+        var posts = await _context.ForumPosts
+            .Include(post => post.Category)
+            .Include(post => post.Author)
+            .Include(post => post.Comments)
+            .OrderByDescending(post => post.CreatedAt)
+            .ToListAsync();
+
+        return View(posts);
+    }
+
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteForumPost(int id)
+    {
+        var post = await _context.ForumPosts.FindAsync(id);
+        if (post == null) return NotFound();
+
+        _context.ForumPosts.Remove(post);
+        await _context.SaveChangesAsync();
+
+        TempData["Success"] = "Post został usunięty";
+        return RedirectToAction(nameof(ForumPosts));
     }
 
     public async Task<IActionResult> EditAlgorithm(int id)
