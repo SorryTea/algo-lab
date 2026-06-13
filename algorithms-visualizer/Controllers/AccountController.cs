@@ -31,6 +31,7 @@ public class AccountController : ControllerBase
         {
             UserName = request.Email,
             Email = request.Email,
+            Nickname = request.Nickname,
             EmailConfirmed = true
         };
 
