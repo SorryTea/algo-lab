@@ -1,25 +1,19 @@
 import { useEffect, useRef, useState } from "react";
 import { executeAlgorithm } from "../lib/api";
+import {
+  MIN_ELEMENTS,
+  MAX_VISUALIZE,
+  parseNumbers,
+  randomArray,
+  formatDuration,
+} from "../lib/visualization";
 
 const COLOR_DEFAULT = "#8b5cf6";
 const COLOR_COMPARE = "#fbbf24";
 const COLOR_SORTED = "#34d399";
 
-const MIN_COUNT = 5;
-const MAX_COUNT = 80;
 const D_MIN = 40;
 const D_MAX = 700;
-
-function parseInput(text) {
-  return text
-    .split(/[\s,]+/)
-    .map((t) => parseInt(t, 10))
-    .filter((n) => Number.isInteger(n));
-}
-
-function randomArray(n, max = 99) {
-  return Array.from({ length: n }, () => Math.floor(Math.random() * max) + 1);
-}
 
 export default function SortVisualizer({ algorithmName }) {
   const [count, setCount] = useState(12);
@@ -33,7 +27,7 @@ export default function SortVisualizer({ algorithmName }) {
   const timer = useRef(null);
 
   function generate(n = count) {
-    const size = Math.max(MIN_COUNT, Math.min(MAX_COUNT, n));
+    const size = Math.max(MIN_ELEMENTS, Math.min(MAX_VISUALIZE, n));
     setInputText(randomArray(size).join(", "));
     setSteps([]);
     setMeta(null);
@@ -43,7 +37,7 @@ export default function SortVisualizer({ algorithmName }) {
   }
 
   async function run() {
-    const data = parseInput(inputText).slice(0, MAX_COUNT);
+    const data = parseNumbers(inputText).slice(0, MAX_VISUALIZE);
     if (data.length === 0) {
       setStatus("error");
       setSteps([]);
@@ -74,7 +68,8 @@ export default function SortVisualizer({ algorithmName }) {
     return () => clearTimeout(timer.current);
   }, [playing, current, steps.length, delay]);
 
-  const preview = parseInput(inputText).slice(0, MAX_COUNT);
+  const preview = parseNumbers(inputText).slice(0, MAX_VISUALIZE);
+  const parsedCount = preview.length;
   const step =
     steps.length > 0
       ? steps[current]
@@ -145,7 +140,7 @@ export default function SortVisualizer({ algorithmName }) {
             {meta && (
               <p className="text-xs text-obsidian-muted">
                 Backend: {meta.totalSteps} kroków
-                {meta.timeUs != null && <> · {meta.timeUs} µs</>}
+                {meta.timeUs != null && <> · {formatDuration(meta.timeUs)}</>}
               </p>
             )}
           </div>
@@ -169,8 +164,8 @@ export default function SortVisualizer({ algorithmName }) {
           </div>
           <input
             type="range"
-            min={MIN_COUNT}
-            max={MAX_COUNT}
+            min={MIN_ELEMENTS}
+            max={MAX_VISUALIZE}
             value={count}
             onChange={(e) => {
               const n = Number(e.target.value);
@@ -179,6 +174,10 @@ export default function SortVisualizer({ algorithmName }) {
             }}
             className="w-full accent-violet-500"
           />
+          <div className="flex justify-between text-[11px] text-obsidian-muted tabular-nums">
+            <span>{MIN_ELEMENTS}</span>
+            <span>{MAX_VISUALIZE}</span>
+          </div>
         </div>
 
         <div className="space-y-2">
@@ -207,12 +206,18 @@ export default function SortVisualizer({ algorithmName }) {
         </button>
 
         <div className="space-y-2">
-          <label className="text-xs text-obsidian-muted">Dane (ręcznie)</label>
-          <input
+          <div className="flex justify-between items-baseline">
+            <label className="text-xs text-obsidian-muted">Dane (ręcznie)</label>
+            <span className="text-[11px] text-obsidian-muted tabular-nums">
+              {parsedCount} / {MAX_VISUALIZE}
+            </span>
+          </div>
+          <textarea
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
-            placeholder="np. 5, 3, 8, 1"
-            className="w-full px-3 py-2 rounded-lg border border-obsidian-border bg-obsidian-elevated text-sm"
+            rows={4}
+            placeholder="np. 5, 3, 8, 1 — oddziel spacją, przecinkiem lub nową linią"
+            className="w-full px-3 py-2 rounded-lg border border-obsidian-border bg-obsidian-elevated text-sm font-mono resize-y"
           />
         </div>
 

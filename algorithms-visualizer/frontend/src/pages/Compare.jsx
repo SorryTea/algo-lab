@@ -1,22 +1,21 @@
 import { useEffect, useState } from "react";
 import { getAlgorithms, compareAlgorithms } from "../lib/api";
+import {
+  MIN_ELEMENTS,
+  MAX_COMPARE,
+  parseNumbers,
+  randomArray,
+  formatDuration,
+} from "../lib/visualization";
 
-function parseInput(text) {
-  return text
-    .split(/[\s,]+/)
-    .map((t) => parseInt(t, 10))
-    .filter((n) => Number.isInteger(n));
-}
-
-function randomArray(n = 20, max = 99) {
-  return Array.from({ length: n }, () => Math.floor(Math.random() * max) + 1);
-}
+const DEFAULT_SIZE = 20;
 
 export default function Compare() {
   const [sortingAlgos, setSortingAlgos] = useState([]);
   const [listStatus, setListStatus] = useState("loading");
   const [selected, setSelected] = useState([]);
-  const [inputText, setInputText] = useState(randomArray().join(", "));
+  const [size, setSize] = useState(DEFAULT_SIZE);
+  const [inputText, setInputText] = useState(() => randomArray(DEFAULT_SIZE).join(", "));
   const [runStatus, setRunStatus] = useState("idle");
   const [result, setResult] = useState(null);
 
@@ -44,8 +43,13 @@ export default function Compare() {
     );
   }
 
+  function changeSize(n) {
+    setSize(n);
+    setInputText(randomArray(n).join(", "));
+  }
+
   async function run() {
-    const data = parseInput(inputText).slice(0, 200);
+    const data = parseNumbers(inputText).slice(0, MAX_COMPARE);
     if (selected.length < 2 || data.length === 0) {
       setRunStatus("error");
       setResult(null);
@@ -74,6 +78,7 @@ export default function Compare() {
     );
   }
 
+  const parsedCount = parseNumbers(inputText).slice(0, MAX_COMPARE).length;
   const valid = (result?.results ?? []).filter((r) => !r.error);
   const minSteps = valid.length ? Math.min(...valid.map((r) => r.totalSteps)) : 0;
   const maxSteps = valid.length ? Math.max(...valid.map((r) => r.totalSteps)) : 0;
@@ -111,17 +116,49 @@ export default function Compare() {
         </div>
       </section>
 
-      <section className="space-y-3">
+      <section className="space-y-4">
         <h2 className="text-sm font-semibold text-obsidian-muted">Dane wejściowe</h2>
-        <div className="flex flex-wrap items-center gap-3">
+
+        {/* Suwak rozmiaru — tak samo jak w wizualizatorze */}
+        <div className="space-y-2 max-w-md">
+          <div className="flex justify-between text-sm">
+            <span className="text-obsidian-muted">Rozmiar losowych danych</span>
+            <span className="text-obsidian-text font-medium tabular-nums">{size}</span>
+          </div>
           <input
+            type="range"
+            min={MIN_ELEMENTS}
+            max={MAX_COMPARE}
+            value={size}
+            onChange={(e) => changeSize(Number(e.target.value))}
+            className="w-full accent-violet-500"
+          />
+          <div className="flex justify-between text-[11px] text-obsidian-muted tabular-nums">
+            <span>{MIN_ELEMENTS}</span>
+            <span>{MAX_COMPARE}</span>
+          </div>
+        </div>
+
+        {}
+        <div className="space-y-2">
+          <div className="flex justify-between items-baseline">
+            <label className="text-xs text-obsidian-muted">Dane (ręcznie)</label>
+            <span className="text-[11px] text-obsidian-muted tabular-nums">
+              {parsedCount} / {MAX_COMPARE}
+            </span>
+          </div>
+          <textarea
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
-            placeholder="np. 5, 3, 8, 1"
-            className="flex-1 min-w-[220px] px-3 py-2 rounded-lg border border-obsidian-border bg-obsidian-elevated text-sm"
+            rows={4}
+            placeholder="np. 5, 3, 8, 1 — oddziel spacją, przecinkiem lub nową linią"
+            className="w-full px-3 py-2 rounded-lg border border-obsidian-border bg-obsidian-elevated text-sm font-mono resize-y"
           />
+        </div>
+
+        <div className="flex flex-wrap items-center gap-3">
           <button
-            onClick={() => setInputText(randomArray().join(", "))}
+            onClick={() => changeSize(size)}
             className="px-3 py-2 rounded-lg border border-obsidian-border text-sm hover:border-violet-500"
           >
             Losuj
@@ -134,6 +171,7 @@ export default function Compare() {
             {runStatus === "loading" ? "Liczę…" : "Porównaj"}
           </button>
         </div>
+
         {runStatus === "error" && (
           <p className="text-red-400 text-sm">
             Wybierz co najmniej dwa algorytmy i podaj poprawne dane (liczby całkowite).
@@ -183,7 +221,7 @@ export default function Compare() {
                       <td className="px-4 py-3 text-obsidian-muted font-mono">{r.timeComplexity}</td>
                       <td className="px-4 py-3 text-right tabular-nums">{r.totalSteps}</td>
                       <td className="px-4 py-3 text-right tabular-nums text-obsidian-muted">
-                        {r.executionTimeMicroseconds} µs
+                        {formatDuration(r.executionTimeMicroseconds)}
                       </td>
                       <td className="px-4 py-3">
                         <div className="h-2 rounded-full bg-obsidian-surface overflow-hidden">
@@ -202,7 +240,7 @@ export default function Compare() {
 
           <p className="text-xs text-obsidian-muted">
             Mniej kroków oznacza mniej operacji na danych. Czas mierzony jest na backendzie
-            w mikrosekundach i może się nieznacznie różnić między uruchomieniami.
+            i może się nieznacznie różnić między uruchomieniami.
           </p>
         </section>
       )}

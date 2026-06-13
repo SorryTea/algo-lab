@@ -9,6 +9,28 @@ const backend = {
 
 export default defineConfig({
   plugins: [react()],
+   build: {
+    rolldownOptions: {
+      output: {
+        codeSplitting: {
+          groups: [
+            {
+              name: "react-vendor",
+              test: /node_modules[\\/](react|react-dom|react-router|scheduler)[\\/]/,
+            },
+            {
+              name: "motion",
+              test: /node_modules[\\/](motion|framer-motion)[\\/]/,
+            },
+            {
+              name: "vendor",
+              test: /node_modules[\\/]/,
+            },
+          ],
+        },
+      },
+    },
+  },
   server: {
     port: 5173,
     proxy: {

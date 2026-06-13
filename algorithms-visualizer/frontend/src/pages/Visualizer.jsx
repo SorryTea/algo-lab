@@ -4,6 +4,7 @@ import { getAlgorithm } from "../lib/api";
 import SortVisualizer from "../components/SortVisualizer";
 import SearchVisualizer from "../components/SearchVisualizer";
 import GraphVisualizer from "../components/GraphVisualizer";
+import AlgorithmInfo from "../components/AlgorithmInfo";
 
 export default function Visualizer() {
   const { id } = useParams();
@@ -45,25 +46,31 @@ export default function Visualizer() {
           </p>
           <p className="mb-6">{algorithm.description}</p>
 
+          <div className="mb-8">
+            <AlgorithmInfo name={algorithm.name} />
+          </div>
+
           <h2 className="text-lg font-semibold mb-2">Pseudokod</h2>
           <pre className="p-4 rounded-xl border border-obsidian-border bg-obsidian-elevated overflow-x-auto text-sm whitespace-pre-wrap">
             {algorithm.pseudoCode}
           </pre>
 
-          {algorithm.category?.slug === "sorting" && (
-            <SortVisualizer algorithmName={algorithm.name} />
-          )}
-          {algorithm.category?.slug === "searching" && (
-            <SearchVisualizer algorithmName={algorithm.name} />
-          )}
-          {algorithm.category?.slug === "graphs" && (
-            <GraphVisualizer algorithmName={algorithm.name} />
-          )}
-          {!["sorting", "searching", "graphs"].includes(algorithm.category?.slug) && (
-            <div className="mt-8 h-40 rounded-xl border-2 border-dashed border-obsidian-border flex items-center justify-center text-center text-obsidian-muted px-4">
-              Wizualizacja dla kategorii „{algorithm.category?.name}" jest w przygotowaniu.
-            </div>
-          )}
+          <div className="mt-10">
+            {algorithm.category?.slug === "sorting" && (
+              <SortVisualizer algorithmName={algorithm.name} />
+            )}
+            {algorithm.category?.slug === "searching" && (
+              <SearchVisualizer algorithmName={algorithm.name} />
+            )}
+            {algorithm.category?.slug === "graphs" && (
+              <GraphVisualizer algorithmName={algorithm.name} />
+            )}
+            {!["sorting", "searching", "graphs"].includes(algorithm.category?.slug) && (
+              <div className="h-40 rounded-xl border-2 border-dashed border-obsidian-border flex items-center justify-center text-center text-obsidian-muted px-4">
+                Wizualizacja dla kategorii „{algorithm.category?.name}" jest w przygotowaniu.
+              </div>
+            )}
+          </div>
         </>
       )}
     </div>
