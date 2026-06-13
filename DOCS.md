@@ -217,3 +217,44 @@ Wizualizacje pobierają kroki z `/api/algorithms/execute` i odtwarzają je z wyb
 ### Styling
 
 Styling jest oparty głównie o Tailwind CSS, czyli klasy utility pisane bezpośrednio w JSX. Projekt ma własną ciemną paletę `obsidian`, a głównym kolorem akcentu jest violet. Responsywność robimy przez breakpointy Tailwinda, np. `sm:`, `md:` i `lg:`.
+
+## Forum
+
+Forum to część aplikacji, w której użytkownicy mogą zadawać pytania, zgłaszać błędy i proponować nowe funkcje albo algorytmy. Odczyt postów jest publiczny, więc niezalogowany użytkownik może przeglądać dyskusje, ale tworzenie postów i komentarzy wymaga konta. Dzięki temu forum działa jako lekka warstwa społecznościowa obok samych wizualizacji.
+
+### Model danych
+
+Forum ma trzy główne encje. `ForumCategory` przechowuje kategorie tematyczne przez pola `Name` i `Slug`, podobnie jak kategorie algorytmów - nazwa jest dla użytkownika, a slug do filtrowania i URL-i. `ForumPost` opisuje pojedynczy post: ma `Title`, `Content`, `CreatedAt`, `CategoryId` oraz `AuthorId`. `ForumComment` przechowuje komentarze pod postami przez `Content`, `CreatedAt`, `PostId` i `AuthorId`.
+
+Posty i komentarze mają referencję do `AppUser`, więc można pokazać autora, avatar i nick bez kopiowania tych danych do tabel forum. Komentarze są zależne od posta - usunięcie posta usuwa też jego komentarze przez cascade, dzięki czemu w bazie nie zostają osierocone wpisy.
+
+### Endpoints API
+
+| Metoda | Ścieżka                          | Opis                                                                                           | Wymaga loginu         |
+| ------ | -------------------------------- | ---------------------------------------------------------------------------------------------- | --------------------- |
+| GET    | `/api/forum/categories`          | Zwraca listę kategorii forum z `Id`, `Name` i `Slug`.                                          | nie                   |
+| GET    | `/api/forum/posts?categorySlug=` | Zwraca listę postów, opcjonalnie filtrowaną po slugu kategorii.                                | nie                   |
+| GET    | `/api/forum/posts/{id}`          | Zwraca szczegóły jednego posta razem z komentarzami.                                           | nie                   |
+| POST   | `/api/forum/posts`               | Tworzy nowy post w wybranej kategorii i zwraca jego `id`.                                      | tak                   |
+| POST   | `/api/forum/posts/{id}/comments` | Dodaje komentarz do istniejącego posta i zwraca `id` komentarza.                               | tak                   |
+| DELETE | `/api/forum/posts/{id}`          | Usuwa post, jeśli aktualny użytkownik jest jego autorem albo ma rolę admina.                   | tak (admin lub autor) |
+
+### Autoryzacja w API forum
+
+Publiczne endpointy `GET` są dostępne dla każdego, bo forum ma być czytelne bez zakładania konta. Akcje `POST` i `DELETE` mają atrybut `[Authorize]`, więc wymagają zalogowanego użytkownika. Login z Reacta obsługuje `AccountController` przez `POST /api/account/login`, a sesja jest dzielona z widokami Razor przez to samo cookie ASP.NET Identity.
+
+Przy tworzeniu posta albo komentarza backend pobiera aktualnego użytkownika z `UserManager<AppUser>` i zapisuje jego `Id` jako autora. Przy usuwaniu posta kontroler sprawdza dwa warunki: czy użytkownik ma rolę `Admin`, albo czy `AuthorId` posta jest takie samo jak `Id` aktualnego użytkownika. Jeśli nie spełnia żadnego z nich, API zwraca `403 Forbidden`.
+
+### Moderacja w panelu admin
+
+Admin ma osobną zakładkę **Posty forum** w `/Admin`, gdzie widzi wszystkie posty razem z autorem, kategorią, liczbą komentarzy i datą utworzenia. Z tego miejsca może usuwać posty niezależnie od autora. Usunięcie posta kasuje również jego komentarze, więc moderacja nie wymaga dodatkowego sprzątania powiązanych rekordów.
+
+Ten widok jest zrobiony tak samo jak reszta panelu administracyjnego: klasyczne Razor Views + Bootstrap. Dzięki temu forum nie wprowadza osobnego stylu panelu admina i zostaje spójne z zarządzaniem algorytmami, kategoriami, logami i użytkownikami.
+
+### DTO i bezpieczeństwo
+
+API forum zwraca DTO zamiast bezpośrednio serializować encje EF Core. To ważne szczególnie przy relacji z `AppUser`, bo obiekt użytkownika zawiera pola techniczne Identity, których frontend nie powinien dostać, np. `PasswordHash` albo `SecurityStamp`.
+
+DTO upraszczają też dane dla Reacta. Nick autora jest składany po stronie backendu: jeśli użytkownik ma `Nickname`, API zwraca nick, a jeśli go nie ma, używa lokalnej części adresu email. Lista postów zwraca `CommentsCount` zamiast całej listy komentarzy, dzięki czemu odpowiedź jest lekka i wystarcza do widoku listy. Pełne komentarze są pobierane dopiero w szczegółach posta.
+
+Requesty do tworzenia postów i komentarzy mają osobne klasy (`CreatePostRequest`, `CreateCommentRequest`) z walidacją przez DataAnnotations. `Required` pilnuje wymaganych pól, a `MaxLength` ogranicza długość tytułu, treści posta i treści komentarza już na wejściu do API.
