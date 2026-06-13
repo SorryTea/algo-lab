@@ -5,6 +5,10 @@ namespace algorithms_visualizer.Services.Models.Account;
 public class RegisterRequest
 {
     [Required]
+    [MaxLength(50)]
+    public string Nickname { get; set; } = string.Empty;
+
+    [Required]
     [EmailAddress]
     public string Email { get; set; } = string.Empty;
 

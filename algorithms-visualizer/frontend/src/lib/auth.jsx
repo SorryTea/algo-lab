@@ -6,7 +6,14 @@ async function fetchMe() {
   try {
     const res = await fetch("/api/account/me", { credentials: "include" });
     if (!res.ok) return null;
-    return res.json();
+    const data = await res.json();
+    if (!data?.isAuthenticated || !data.user) return null;
+
+    return {
+      ...data.user,
+      isAdmin: data.user.roles?.includes("Admin") ?? false,
+      manageUrl: "/Identity/Account/Manage",
+    };
   } catch {
     return null;
   }
